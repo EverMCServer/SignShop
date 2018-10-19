@@ -25,7 +25,7 @@ public class LinkAdditionalBlocks implements SignShopSpecialOp {
         List<Block> updatedList = newBlocks;
         for (Block masterBlock : masterBlocks) {
             if (newBlocks.contains(masterBlock)) {
-                ssPlayer.sendMessage("Attempting to unlink " + itemUtil.formatData(masterBlock.getState().getData()) + " from shop.");
+                ssPlayer.sendMessage("Attempting to unlink " + masterBlock.getState().getType().toString() + " from shop.");
                 updatedList.remove(masterBlock);
             } else {
                 updatedList.add(masterBlock);
@@ -36,10 +36,10 @@ public class LinkAdditionalBlocks implements SignShopSpecialOp {
                 SSLinkEvent event = SSEventFactory.generateLinkEvent(newBlock, ssPlayer, pSeller);
                 SignShop.scheduleEvent(event);
                 if(event.isCancelled()) {
-                    ssPlayer.sendMessage("You are not allowed to link this " + itemUtil.formatData(newBlock.getState().getData()) + " to the shop.");
+                    ssPlayer.sendMessage("You are not allowed to link this " + newBlock.getState().getType().toString() + " to the shop.");
                     updatedList.remove(newBlock);
                 } else {
-                    ssPlayer.sendMessage("Attempting to link " + itemUtil.formatData(newBlock.getState().getData()) + " to the shop.");
+                    ssPlayer.sendMessage("Attempting to link " + newBlock.getState().getType().toString() + " to the shop.");
                 }
 
             }

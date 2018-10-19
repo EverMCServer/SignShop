@@ -24,7 +24,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.wargamer2010.signshop.configuration.ColorUtil;
-import org.wargamer2010.signshop.util.WebUtil;
 import org.wargamer2010.signshop.util.itemUtil;
 import static org.wargamer2010.signshop.util.itemUtil.enchantmentsToMessageFormat;
 import org.wargamer2010.signshop.util.signshopUtil;
@@ -91,14 +90,15 @@ public class SignShopItemMeta {
     }
 
     private static String getDisplayName(ItemStack stack, ChatColor color) {
-        String nameFromWeb = WebUtil.getNameFromWeb(stack);
+//        String nameFromWeb = WebUtil.getNameFromWeb(stack);
+        String nameFromWeb = stack.getItemMeta().getDisplayName();
         String txtcolor = txtColor.toString();
         String customcolor = (stack.getEnchantments().isEmpty() ? color.toString() : ChatColor.DARK_PURPLE.toString());
         String nameFromWhatIsIt = "Unknown";
         if(Bukkit.getServer().getPluginManager().isPluginEnabled("WhatIsIt"))
         	nameFromWhatIsIt = WhatIsIt.itemName(stack);
         String itemName = nameFromWhatIsIt.isEmpty() || (nameFromWhatIsIt.compareTo("Unknown")) == 0 ? nameFromWeb : nameFromWhatIsIt;
-        String normal = itemName.isEmpty() ? itemUtil.formatData(stack.getData(), stack.getDurability()) : itemName;
+        String normal = itemName.isEmpty() ? itemUtil.formatData(stack) : itemName;
         String displayname = "";
 
         if(stack.getItemMeta() != null) {

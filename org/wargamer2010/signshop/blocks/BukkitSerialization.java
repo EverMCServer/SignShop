@@ -35,16 +35,59 @@ public class BukkitSerialization {
 
     /**
      *
-     * A method to serialize an {@link ItemStack} array to Base64 String.
+     * A method to serialize an {@link ItemStack} to Base64 String.
      *
      * <p />
      *
      * Based off of {@link #toBase64(Inventory)}.
      *
-     * @param items to turn into a Base64 String.
-     * @return Base64 string of the items.
+     * @param item to turn into a Base64 String.
+     * @return Base64 string of the item.
      * @throws IllegalStateException
      */
+
+    public static String itemStackToBase64(ItemStack item) throws IllegalStateException {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
+
+            // Save the item
+            dataOutput.writeObject(item);
+
+            // Serialize that item
+            dataOutput.close();
+            return Base64Coder.encodeLines(outputStream.toByteArray());
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to save item stacks.", e);
+        }
+    }
+
+
+    /**
+     * Gets an {@link ItemStack} from a Base64 string.
+     *
+     * <p />
+     *
+     * Base off of {@link #itemStackArrayFromBase64(String)}.
+     *
+     * @param data Base64 string to convert to ItemStack.
+     * @return ItemStack created from the Base64 string.
+     * @throws IOException
+     */
+    public static ItemStack itemStackFromBase64(String data) throws IOException {
+        try {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
+            BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
+
+            ItemStack item = (ItemStack) dataInput.readObject();
+
+            dataInput.close();
+            return item;
+        } catch (ClassNotFoundException e) {
+            throw new IOException("Unable to decode class type.", e);
+        }
+    }
+
     public static String itemStackArrayToBase64(ItemStack[] items) throws IllegalStateException {
     	try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

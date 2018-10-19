@@ -6,9 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.Chunk;
 import org.bukkit.block.Sign;
-import org.bukkit.material.MaterialData;
 import org.bukkit.Material;
-import org.bukkit.material.SimpleAttachableMaterialData;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +15,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import org.bukkit.Bukkit;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.meta.BookMeta;
@@ -141,42 +138,25 @@ public class itemUtil {
         return roman;
     }
 
-    public static String formatData(MaterialData data) {
+    public static String formatData(ItemStack data) {
         short s = 0;
         return formatData(data, s);
     }
 
-    public static String formatData(MaterialData data, short durability) {
-        String sData;
-        // Lookup spout custom material
-        if(Bukkit.getServer().getPluginManager().isPluginEnabled("Spout")) {
-            sData = spoutUtil.getName(data, durability);
-            if(sData != null)
-                return sData;
+    public static String formatData(ItemStack data, short durability) {
+
+        String name;
+        String name1;
+
+        if(data.getItemMeta().getDisplayName() == null || data.getItemMeta().getDisplayName().equals("")) {
+            name = data.getType().toString();
+            name1 = name.replace("_", " ").toLowerCase();
+        }
+        else {
+            name1 = data.getItemMeta().getDisplayName();
         }
 
-        // For some reason running tostring on data when it's from an attachable material
-        // will cause a NullPointerException, thus if we're dealing with an attachable, go the easy way :)
-        if(data instanceof SimpleAttachableMaterialData)
-            return stringFormat(data.getItemType().name());
-
-        sData = data.toString().toLowerCase();
-
-        Pattern p = Pattern.compile("\\(-?[0-9]+\\)");
-        Matcher m = p.matcher(sData);
-        sData = m.replaceAll("");
-        sData = sData.replace("_", " ");
-
-        StringBuffer sb = new StringBuffer(sData.length());
-        p = Pattern.compile("(^|\\W)([a-z])");
-        m = p.matcher(sData);
-        while(m.find()) {
-            m.appendReplacement(sb, m.group(1) + m.group(2).toUpperCase() );
-        }
-
-        m.appendTail(sb);
-
-        return sb.toString();
+        return name1;
     }
 
     private static String stringFormat(String sMaterial){
@@ -200,8 +180,7 @@ public class itemUtil {
         IItemTags tags = BookFactory.getItemTags();
         ItemStack isBackup = tags.getCraftItemstack(
             item.getType(),
-            1,
-            item.getDurability()
+            1
         );
         safelyAddEnchantments(isBackup, item.getEnchantments());
         if(item.getData() != null){
@@ -237,7 +216,7 @@ public class itemUtil {
             String newItemMeta = SignShopItemMeta.getName(entry.getKey());
             String count = (SignShopItemMeta.getTextColor() + entry.getValue().toString() + " ");
             if(newItemMeta.isEmpty())
-                sItems += (count + formatData(entry.getKey().getData(), entry.getKey().getDurability()));
+                sItems += (count + formatData(entry.getKey()));
             else
                 sItems += (count + newItemMeta);
             if(itemUtil.isWriteableBook(entry.getKey())) {
@@ -259,7 +238,7 @@ public class itemUtil {
         for(Map.Entry<Enchantment,Integer> eEntry : enchantments.entrySet()) {
             if(eFirst) eFirst = false;
             else enchantmentMessage += ", ";
-            enchantmentMessage += (stringFormat(eEntry.getKey().getName()) + " " + binaryToRoman(eEntry.getValue()));
+            enchantmentMessage += (stringFormat(eEntry.getKey().toString()) + " " + binaryToRoman(eEntry.getValue()));
         }
         enchantmentMessage += ")";
         return enchantmentMessage;
@@ -458,24 +437,24 @@ public class itemUtil {
         for(int i = 0; i < sItems.size(); i++) {
             try {
                 String[] sItemprops = sItems.get(i).split(Storage.getItemSeperator());
-                if(sItemprops.length < 4) {
+                if(sItemprops.length < 3) {
                     invalidItems++;
                     continue;
                 }
 
-                if(sItemprops.length <= 7) {
-                    if(i < (sItems.size() - 1) && sItems.get(i + 1).split(Storage.getItemSeperator()).length < 4) {
+                if(sItemprops.length <= 6) {
+                    if(i < (sItems.size() - 1) && sItems.get(i + 1).split(Storage.getItemSeperator()).length < 3) {
                         // Bug detected, the next item will be the base64 string belonging to the current item
                         // This bug will be fixed at the next save as the ~ will be replaced with a |
                         sItemprops = (sItems.get(i) + "|" + sItems.get(i + 1)).split(Storage.getItemSeperator());
                     }
                 }
                 
-                if(sItemprops.length > 7) {
-                    String base64prop = sItemprops[7];
+                if(sItemprops.length > 6) {
+                    String base64prop = sItemprops[6];
                     // The ~ and | are used to differentiate between the old NBTLib and the BukkitSerialization
                     if(base64prop != null && (base64prop.startsWith("~") || base64prop.startsWith("|"))) {
-                        String joined = Join(sItemprops, 7).substring(1);
+                        String joined = Join(sItemprops, 6).substring(1);
 
                         ItemStack[] convertedStacks = BukkitSerialization.itemStackArrayFromBase64(joined);
                         if(convertedStacks.length > 0 && convertedStacks[0] != null) {
@@ -486,24 +465,23 @@ public class itemUtil {
 
                 if(isItems[i] == null) {
                     isItems[i] = tags.getCraftItemstack(
-                        Material.getMaterial(Integer.parseInt(sItemprops[1])),
-                        Integer.parseInt(sItemprops[0]),
-                        Short.parseShort(sItemprops[2])
+                        Material.getMaterial(sItemprops[1]),
+                        Integer.parseInt(sItemprops[0])
                     );
-                    isItems[i].getData().setData(new Byte(sItemprops[3]));
+                    isItems[i].setItemMeta(BukkitSerialization.itemStackFromBase64(sItemprops[2]).getItemMeta());
 
-                    if(sItemprops.length > 4)
+                    if(sItemprops.length > 3)
                         safelyAddEnchantments(isItems[i], signshopUtil.convertStringToEnchantments(sItemprops[4]));
                 }
 
-                if(sItemprops.length > 5) {
+                if(sItemprops.length > 4) {
                     try {
                         isItems[i] = SignShopBooks.addBooksProps(isItems[i], Integer.parseInt(sItemprops[5]));
                     } catch(NumberFormatException ex) {
 
                     }
                 }
-                if(sItemprops.length > 6) {
+                if(sItemprops.length > 5) {
                     try {
                         SignShopItemMeta.setMetaForID(isItems[i], Integer.parseInt(sItemprops[6]));
                     } catch(NumberFormatException ex) {
@@ -543,6 +521,7 @@ public class itemUtil {
             return new String[1];
 
         ItemStack isCurrent;
+
         for(int i = 0; i < isItems.length; i++) {
             if(isItems[i] != null) {
                 isCurrent = isItems[i];
@@ -556,9 +535,10 @@ public class itemUtil {
                 stacks[0] = isCurrent;
 
                 sItems.add((isCurrent.getAmount() + Storage.getItemSeperator()
-                        + isCurrent.getTypeId() + Storage.getItemSeperator()
-                        + isCurrent.getDurability() + Storage.getItemSeperator()
-                        + isCurrent.getData().getData() + Storage.getItemSeperator()
+                        + isCurrent.getType().toString() + Storage.getItemSeperator()
+                        + BukkitSerialization.itemStackToBase64(isCurrent) + Storage.getItemSeperator()
+//                        + isCurrent.getDurability() + Storage.getItemSeperator()
+//                        + isCurrent.getData().getData() + Storage.getItemSeperator()
                         + signshopUtil.convertEnchantmentsToString(isCurrent.getEnchantments()) + Storage.getItemSeperator()
                         + ID + Storage.getItemSeperator()
                         + metaID + Storage.getItemSeperator()
@@ -574,9 +554,7 @@ public class itemUtil {
     public static boolean itemstackEqual(ItemStack a, ItemStack b, boolean ignoredur) {
         if(a.getType() != b.getType())
             return false;
-        if(!ignoredur && a.getData().getData() != b.getData().getData())
-            return false;
-        if(!ignoredur && a.getDurability() != b.getDurability())
+        if(!ignoredur && !(a.equals(b)))
             return false;
         if(a.getEnchantments() != b.getEnchantments())
             return false;

@@ -13,7 +13,7 @@ public class ItemTags implements IItemTags {
     }
 
     @Override
-    public org.bukkit.inventory.ItemStack getCraftItemstack(Material mat, Integer amount, Short damage) {
-        return new org.bukkit.inventory.ItemStack(mat, amount, damage);
+    public org.bukkit.inventory.ItemStack getCraftItemstack(Material mat, Integer amount) {
+        return new org.bukkit.inventory.ItemStack(mat, amount);
     }
 }
