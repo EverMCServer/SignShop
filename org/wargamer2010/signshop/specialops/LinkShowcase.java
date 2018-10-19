@@ -56,15 +56,15 @@ public class LinkShowcase implements SignShopSpecialOp {
 
         ShowCaseStandalone scs = (ShowCaseStandalone) Bukkit.getServer().getPluginManager().getPlugin("ShowCaseStandalone");
 
-        com.kellerkindt.scs.shops.Shop p = new com.kellerkindt.scs.shops.DisplayShop(bStep.getWorld().getUID(),
-                ssPlayer.getPlayer().getUniqueId(), bStep.getLocation(), showcasing);
-        p.setItemStack(showcasing);
-        p.setAmount(1);
-        p.setVisible(true);
-        scs.getShopHandler().addShop(p);
-        scs.getShopHandler().showAll();
-        seller.addMisc("showcaselocation", signshopUtil.convertLocationToString(bStep.getLocation()));
-        ssPlayer.sendMessage("Showcase has been successfully created.");
+//        com.kellerkindt.scs.shops.Shop p = new com.kellerkindt.scs.shops.DisplayShop(bStep.getWorld().getUID(),
+//                ssPlayer.getPlayer().getUniqueId(), bStep.getLocation(), showcasing);
+//        p.setItemStack(showcasing);
+//        p.setAmount(1);
+//        p.setVisible(true);
+//        scs.getShopHandler().addShop(p);
+//        scs.getShopHandler().showAll();
+//        seller.addMisc("showcaselocation", signshopUtil.convertLocationToString(bStep.getLocation()));
+//        ssPlayer.sendMessage("Showcase has been successfully created.");
         return true;
     }
 }
