@@ -26,7 +26,6 @@ import org.wargamer2010.signshop.metrics.setupMetrics;
 import org.wargamer2010.signshop.money.MoneyModifierManager;
 import org.wargamer2010.signshop.player.PlayerMetadata;
 import org.wargamer2010.signshop.timing.TimeManager;
-import org.wargamer2010.signshop.util.WebUtil;
 import org.wargamer2010.signshop.util.commandUtil;
 import org.wargamer2010.skript.EvtSSPretransaction;
 
@@ -100,7 +99,6 @@ public class SignShop extends JavaPlugin{
         SignShopBooks.init();
         PlayerMetadata.init();
         SignShopItemMeta.init();
-        WebUtil.init();
         ColorUtil.init();
         MoneyModifierManager.init();
 
