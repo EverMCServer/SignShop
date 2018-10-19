@@ -7,10 +7,8 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -135,7 +133,7 @@ public class signshopUtil {
                 Enchantment eTemp;
                 try {
                     iEnchantment = Integer.parseInt(sEnchantment[0]);
-                    eTemp = Enchantment.getById(iEnchantment);
+                    eTemp = Enchantment.getByKey(NamespacedKey.minecraft(sEnchantments));
                 } catch(NumberFormatException ex) {
                     eTemp = Enchantment.getByName(sEnchantment[0]);
                 }
@@ -156,7 +154,7 @@ public class signshopUtil {
         for(Map.Entry<Enchantment, Integer> entry : aEnchantments.entrySet()) {
             if(first) first = false;
             else sEnchantments += ";";
-            sEnchantments += (entry.getKey().getName() + "|" + entry.getValue());
+            sEnchantments += (entry.getKey().toString() + "|" + entry.getValue());
         }
         return sEnchantments;
     }
@@ -459,7 +457,7 @@ public class signshopUtil {
                 else {
                     clicks.mClicksPerLocation.put(bClicked.getLocation(), ssPlayer.getPlayer());
                     Map<String, String> messageParts = new LinkedHashMap<String, String>();
-                    messageParts.put("!block", itemUtil.formatData(bClicked.getState().getData()));
+                    messageParts.put("!block", bClicked.getState().getType().toString());
                     if(bClicked.getState() instanceof InventoryHolder) {
                         List<Block> containables = new LinkedList<Block>();
                         containables.add(bClicked);
