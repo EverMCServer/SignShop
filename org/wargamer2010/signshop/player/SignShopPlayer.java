@@ -145,7 +145,7 @@ public class SignShopPlayer {
         if(isOpRaw())
             return true;
         String fullperm = (perm.isEmpty() ? "SignShop.SuperAdmin" : "SignShop.SuperAdmin." + perm);
-        if(SignShop.usePermissions() && Vault.getPermission().playerHas(world, playername, fullperm.toLowerCase()))
+        if(SignShop.usePermissions() && Vault.getPermission().playerHas(world.getName(), getPlayer(), fullperm.toLowerCase()))
             return true;
         return false;
     }
@@ -188,7 +188,7 @@ public class SignShopPlayer {
 
         // Having Signshop.Superadmin while Permissions are in use should allow you to do everything with SignShop
         // And since the node is explicitly given to a player, the OPOverride setting is not relevant
-        if(SignShop.usePermissions() && Vault.getPermission().playerHas(world, playername, "signshop.superadmin")) {
+        if(SignShop.usePermissions() && Vault.getPermission().playerHas(world.getName(), getPlayer(), "signshop.superadmin")) {
             setOp(isOP);
             return true;
         }
@@ -197,7 +197,7 @@ public class SignShopPlayer {
         if(SignShop.usePermissions() && OPOverride && isOP)
             return true;
         // Using Permissions so check his permissions and restore his OP if he has it
-        else if(SignShop.usePermissions() && Vault.getPermission().playerHas(world, playername, perm.toLowerCase())) {
+        else if(SignShop.usePermissions() && Vault.getPermission().playerHas(world.getName(), getPlayer(), perm.toLowerCase())) {
             setOp(isOP);
             return true;
         // Not using Permissions but he is OP, so he's allowed
@@ -224,7 +224,7 @@ public class SignShopPlayer {
         if(playername.isEmpty())
             return true;
         else
-            return Vault.getEconomy().has(playername, amount);
+            return Vault.getEconomy().has(getPlayer(), amount);
     }
 
     public boolean canHaveMoney(double amount) {
@@ -238,19 +238,19 @@ public class SignShopPlayer {
         if(playername.isEmpty())
             return true;
         EconomyResponse response;
-        double currentBalance = Vault.getEconomy().getBalance(playername);
+        double currentBalance = Vault.getEconomy().getBalance(getPlayer());
 
         try {
-            response = Vault.getEconomy().depositPlayer(playername, actual);
+            response = Vault.getEconomy().depositPlayer(getPlayer(), actual);
         } catch(java.lang.RuntimeException ex) {
             response = new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "");
         }
 
-        double newBalance = Vault.getEconomy().getBalance(playername);
+        double newBalance = Vault.getEconomy().getBalance(getPlayer());
         double subtract = (newBalance - currentBalance);
 
         if(response.type == EconomyResponse.ResponseType.SUCCESS) {
-            response = Vault.getEconomy().withdrawPlayer(playername, subtract);
+            response = Vault.getEconomy().withdrawPlayer(getPlayer(), subtract);
             return response.type == EconomyResponse.ResponseType.SUCCESS;
         }
         else {
@@ -266,9 +266,9 @@ public class SignShopPlayer {
         EconomyResponse response;
         try {
             if(amount > 0.0)
-                response = Vault.getEconomy().depositPlayer(playername, amount);
+                response = Vault.getEconomy().depositPlayer(getPlayer(), amount);
             else if(amount < 0.0)
-                response = Vault.getEconomy().withdrawPlayer(playername, Math.abs(amount));
+                response = Vault.getEconomy().withdrawPlayer(getPlayer(), Math.abs(amount));
             else
                 return true;
         } catch(java.lang.RuntimeException ex) {
@@ -414,7 +414,7 @@ public class SignShopPlayer {
     public ItemStack getItemInHand() {
         if(getPlayer() == null)
             return null;
-        ItemStack stack = getPlayer().getItemInHand();
+        ItemStack stack = getPlayer().getInventory().getItemInMainHand();
         if(stack.getType() == Material.getMaterial("AIR"))
             return null;
         return stack;
