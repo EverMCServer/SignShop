@@ -1,7 +1,6 @@
 
 package org.wargamer2010.signshop.blocks;
 
-import com.flobi.WhatIsIt.WhatIsIt;
 import com.google.common.collect.ImmutableList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -90,15 +88,9 @@ public class SignShopItemMeta {
     }
 
     private static String getDisplayName(ItemStack stack, ChatColor color) {
-//        String nameFromWeb = WebUtil.getNameFromWeb(stack);
-        String nameFromWeb = stack.getItemMeta().getDisplayName();
         String txtcolor = txtColor.toString();
         String customcolor = (stack.getEnchantments().isEmpty() ? color.toString() : ChatColor.DARK_PURPLE.toString());
-        String nameFromWhatIsIt = "Unknown";
-        if(Bukkit.getServer().getPluginManager().isPluginEnabled("WhatIsIt"))
-        	nameFromWhatIsIt = WhatIsIt.itemName(stack);
-        String itemName = nameFromWhatIsIt.isEmpty() || (nameFromWhatIsIt.compareTo("Unknown")) == 0 ? nameFromWeb : nameFromWhatIsIt;
-        String normal = itemName.isEmpty() ? itemUtil.formatData(stack) : itemName;
+        String normal = itemUtil.formatData(stack);
         String displayname = "";
 
         if(stack.getItemMeta() != null) {

@@ -27,7 +27,6 @@ import org.wargamer2010.signshop.money.MoneyModifierManager;
 import org.wargamer2010.signshop.player.PlayerMetadata;
 import org.wargamer2010.signshop.timing.TimeManager;
 import org.wargamer2010.signshop.util.commandUtil;
-import org.wargamer2010.skript.EvtSSPretransaction;
 
 public class SignShop extends JavaPlugin{
     private final SignShopPlayerListener playerListener = new SignShopPlayerListener();
@@ -139,10 +138,6 @@ public class SignShop extends JavaPlugin{
                 SignShopServerListener SListener = new SignShopServerListener(getServer());
                 pm.registerEvents(SListener, this);
             }
-            if(!registeredWithSkript && pm.getPlugin("Skript") != null) {
-                EvtSSPretransaction.register();
-                registeredWithSkript = true;
-            }
             registerSSListeners();
             log("v" + pdfFile.getVersion() + " Enabled", Level.INFO);
         } else {
@@ -232,7 +227,6 @@ public class SignShop extends JavaPlugin{
         pm.registerEvents(new ShopUpdater(), this);
         pm.registerEvents(new GetPriceFromWorth(), this);
         pm.registerEvents(new ShopCooldown(), this);
-        pm.registerEvents(new NotificationsHooker(), this);
         pm.registerEvents(new StockChecker(), this);
         pm.registerEvents(new TimedCommandListener(), this);
         pm.registerEvents(new MoneyModifierListener(), this);
@@ -240,10 +234,6 @@ public class SignShop extends JavaPlugin{
         DynmapManager dmm = new DynmapManager();
         if(SignShopConfig.getEnableDynmapSupport())
             pm.registerEvents(dmm, this);
-        if(SignShopConfig.getEnableShopPlotSupport()) {
-            pm.registerEvents(new WorldGuardChecker(), this);
-            pm.registerEvents(new TownyChecker(), this);
-        }
 
         // Money Transactions Types
         pm.registerEvents(new DefaultMoneyTransaction(), this);

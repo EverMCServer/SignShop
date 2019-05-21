@@ -144,18 +144,13 @@ public class itemUtil {
     }
 
     public static String formatData(ItemStack data, short durability) {
-
-        String name;
         String name1;
-
         if(data.getItemMeta().getDisplayName() == null || data.getItemMeta().getDisplayName().equals("")) {
-            name = data.getType().toString();
-            name1 = name.replace("_", " ").toLowerCase();
+            name1=data.getI18NDisplayName();
         }
         else {
             name1 = data.getItemMeta().getDisplayName();
         }
-
         return name1;
     }
 
@@ -178,10 +173,9 @@ public class itemUtil {
         if(item == null)
             return null;
         IItemTags tags = BookFactory.getItemTags();
-        ItemStack isBackup = tags.getCraftItemstack(
-            item.getType(),
-            1
-        );
+        ItemStack isBackup = item.clone();
+        isBackup.setAmount(1);
+
         safelyAddEnchantments(isBackup, item.getEnchantments());
         if(item.getData() != null){
             isBackup.setData(item.getData());
@@ -200,7 +194,7 @@ public class itemUtil {
         for(ItemStack item: isStacks) {
             if(item == null)
                 continue;
-            ItemStack isBackup = getSingleAmountOfStack(item);
+            ItemStack isBackup = item.asOne();
 
             if(item.getEnchantments().size() > 0)
                 enchantments.put(isBackup, item.getEnchantments());
@@ -238,7 +232,7 @@ public class itemUtil {
         for(Map.Entry<Enchantment,Integer> eEntry : enchantments.entrySet()) {
             if(eFirst) eFirst = false;
             else enchantmentMessage += ", ";
-            enchantmentMessage += (stringFormat(eEntry.getKey().toString()) + " " + binaryToRoman(eEntry.getValue()));
+            enchantmentMessage += (stringFormat(eEntry.getKey().getName()) + " " + binaryToRoman(eEntry.getValue()));
         }
         enchantmentMessage += ")";
         return enchantmentMessage;
@@ -433,7 +427,7 @@ public class itemUtil {
         IItemTags tags = BookFactory.getItemTags();
         ItemStack isItems[] = new ItemStack[sItems.size()];
         int invalidItems = 0;
-        
+
         for(int i = 0; i < sItems.size(); i++) {
             try {
                 String[] sItemprops = sItems.get(i).split(Storage.getItemSeperator());
@@ -449,7 +443,7 @@ public class itemUtil {
                         sItemprops = (sItems.get(i) + "|" + sItems.get(i + 1)).split(Storage.getItemSeperator());
                     }
                 }
-                
+
                 if(sItemprops.length > 6) {
                     String base64prop = sItemprops[6];
                     // The ~ and | are used to differentiate between the old NBTLib and the BukkitSerialization
@@ -465,8 +459,8 @@ public class itemUtil {
 
                 if(isItems[i] == null) {
                     isItems[i] = tags.getCraftItemstack(
-                        Material.getMaterial(sItemprops[1]),
-                        Integer.parseInt(sItemprops[0])
+                            Material.getMaterial(sItemprops[1]),
+                            Integer.parseInt(sItemprops[0])
                     );
                     isItems[i].setItemMeta(BukkitSerialization.itemStackFromBase64(sItemprops[2]).getItemMeta());
 
@@ -492,7 +486,7 @@ public class itemUtil {
                 continue;
             }
         }
-        
+
         if(invalidItems > 0) {
             ItemStack temp[] = new ItemStack[sItems.size() - invalidItems];
             int counter = 0;
@@ -502,13 +496,14 @@ public class itemUtil {
                     counter++;
                 }
             }
-            
+
             isItems = temp;
         }
-        
-        
+
+
         return isItems;
     }
+
 
     public static boolean isWriteableBook(ItemStack item) {
         if(item == null) return false;
@@ -550,7 +545,6 @@ public class itemUtil {
         sItems.toArray(items);
         return items;
     }
-
     public static boolean itemstackEqual(ItemStack a, ItemStack b, boolean ignoredur) {
         if(a.getType() != b.getType())
             return false;

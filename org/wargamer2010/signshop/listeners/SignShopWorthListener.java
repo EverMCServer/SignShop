@@ -1,5 +1,6 @@
 package org.wargamer2010.signshop.listeners;
 
+import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.Worth;
 import java.io.File;
 import java.util.logging.Level;
@@ -39,7 +40,7 @@ public class SignShopWorthListener implements Listener {
     }
 
     public static double getPrice(ItemStack stack) {
-        return wWorth.getPrice(stack).doubleValue();
+        return wWorth.getPrice((IEssentials) plEssentials,stack).doubleValue();
     }
 
     public static boolean essLoaded() {

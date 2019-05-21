@@ -2,11 +2,14 @@ package org.wargamer2010.signshop.operations;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.type.Switch;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Lever;
 import org.bukkit.block.Block;
 import org.wargamer2010.signshop.util.signshopUtil;
 import org.wargamer2010.signshop.configuration.SignShopConfig;
+
+import java.util.Optional;
 
 public class toggleRedstone implements SignShopOperation {
     @Override
@@ -36,15 +39,12 @@ public class toggleRedstone implements SignShopOperation {
         for(int i = 0; i < ssArgs.getActivatables().get().size(); i++) {
             bLever = ssArgs.getActivatables().get().get(i);
             if(bLever.getType() == Material.getMaterial("LEVER")) {
-                BlockState state = bLever.getState();
-                MaterialData data = state.getData();
-                Lever lever = (Lever)data;
+                Switch lever = (Switch)bLever.getBlockData();
                 if(!lever.isPowered())
                     lever.setPowered(true);
                 else
                     lever.setPowered(false);
-                state.setData(lever);
-                state.update();
+                bLever.setBlockData(lever);
                 signshopUtil.generateInteractEvent(bLever, ssArgs.getPlayer().get().getPlayer(), ssArgs.getBlockFace().get());
             }
         }

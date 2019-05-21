@@ -25,8 +25,7 @@ public class BookFactory {
             BookMeta.Generation.class.isEnum();
             return new BookItem(stack);
         } catch( NoClassDefFoundError e ) {
-            // Bukkit API 1.8.8-
-            return new LegacyBookItem(stack);
+            return null;
         }
 
     }

@@ -621,7 +621,7 @@ public class SignShopConfig {
         for(ItemStack single : stacks) {
             if(single == null)
                 continue;
-            if(isItemOnBlacklist(single.getType())) {
+            if(isItemOnBlacklist(Material.getMaterial((String)single.serialize().get("type")))) {
                 return single;
             }
         }
