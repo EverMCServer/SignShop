@@ -99,6 +99,10 @@ public class SignShopPlayer {
         return playerId == null ? null : playerId.getPlayer();
     }
 
+    public OfflinePlayer getOfflinePlayer() {
+        return playerId == null ? null : playerId.getOfflinePlayer();
+    }
+
     public World getWorld() {
         return (getPlayer() == null) ? null : getPlayer().getWorld();
     }
@@ -238,19 +242,19 @@ public class SignShopPlayer {
         if(playername.isEmpty())
             return true;
         EconomyResponse response;
-        double currentBalance = Vault.getEconomy().getBalance(getPlayer());
+        double currentBalance = Vault.getEconomy().getBalance(getOfflinePlayer());
 
         try {
-            response = Vault.getEconomy().depositPlayer(getPlayer(), actual);
+            response = Vault.getEconomy().depositPlayer(getOfflinePlayer(), actual);
         } catch(java.lang.RuntimeException ex) {
             response = new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "");
         }
 
-        double newBalance = Vault.getEconomy().getBalance(getPlayer());
+        double newBalance = Vault.getEconomy().getBalance(getOfflinePlayer());
         double subtract = (newBalance - currentBalance);
 
         if(response.type == EconomyResponse.ResponseType.SUCCESS) {
-            response = Vault.getEconomy().withdrawPlayer(getPlayer(), subtract);
+            response = Vault.getEconomy().withdrawPlayer(getOfflinePlayer(), subtract);
             return response.type == EconomyResponse.ResponseType.SUCCESS;
         }
         else {
@@ -266,9 +270,9 @@ public class SignShopPlayer {
         EconomyResponse response;
         try {
             if(amount > 0.0)
-                response = Vault.getEconomy().depositPlayer(getPlayer(), amount);
+                response = Vault.getEconomy().depositPlayer(getOfflinePlayer(), amount);
             else if(amount < 0.0)
-                response = Vault.getEconomy().withdrawPlayer(getPlayer(), Math.abs(amount));
+                response = Vault.getEconomy().withdrawPlayer(getOfflinePlayer(), Math.abs(amount));
             else
                 return true;
         } catch(java.lang.RuntimeException ex) {
