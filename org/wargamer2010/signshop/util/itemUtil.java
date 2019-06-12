@@ -1,5 +1,6 @@
 package org.wargamer2010.signshop.util;
 
+import com.meowj.langutils.lang.LanguageHelper;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.ChatColor;
@@ -32,6 +33,7 @@ import org.wargamer2010.signshop.operations.SignShopArguments;
 import org.wargamer2010.signshop.operations.SignShopArgumentsType;
 import org.wargamer2010.signshop.operations.SignShopOperationListItem;
 import org.wargamer2010.signshop.player.VirtualInventory;
+
 
 public class itemUtil {
     private itemUtil() {
@@ -146,7 +148,7 @@ public class itemUtil {
     public static String formatData(ItemStack data, short durability) {
         String name1;
         if(data.getItemMeta().getDisplayName() == null || data.getItemMeta().getDisplayName().equals("")) {
-            name1=data.getI18NDisplayName();
+            name1= LanguageHelper.getItemDisplayName(data,"zh_cn");
         }
         else {
             name1 = data.getItemMeta().getDisplayName();
@@ -232,7 +234,7 @@ public class itemUtil {
         for(Map.Entry<Enchantment,Integer> eEntry : enchantments.entrySet()) {
             if(eFirst) eFirst = false;
             else enchantmentMessage += ", ";
-            enchantmentMessage += (stringFormat(eEntry.getKey().getName()) + " " + binaryToRoman(eEntry.getValue()));
+            enchantmentMessage += (LanguageHelper.getEnchantmentDisplayName(eEntry.getKey(),eEntry.getValue(),"zh_cn"));
         }
         enchantmentMessage += ")";
         return enchantmentMessage;

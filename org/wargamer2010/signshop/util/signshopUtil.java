@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.meowj.langutils.LangUtils;
+import com.meowj.langutils.lang.LanguageHelper;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -457,7 +459,7 @@ public class signshopUtil {
                 else {
                     clicks.mClicksPerLocation.put(bClicked.getLocation(), ssPlayer.getPlayer());
                     Map<String, String> messageParts = new LinkedHashMap<String, String>();
-                    messageParts.put("!block", bClicked.getState().getType().toString());
+                    messageParts.put("!block", LanguageHelper.translateToLocal("block.minecraft."+bClicked.getState().getType().toString().toLowerCase(),"zh_cn"));
                     if(bClicked.getState() instanceof InventoryHolder) {
                         List<Block> containables = new LinkedList<Block>();
                         containables.add(bClicked);

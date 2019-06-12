@@ -89,7 +89,7 @@ public class SignShopItemMeta {
 
     private static String getDisplayName(ItemStack stack, ChatColor color) {
         String txtcolor = txtColor.toString();
-        String customcolor = (stack.getEnchantments().isEmpty() ? color.toString() : ChatColor.DARK_PURPLE.toString());
+        String customcolor = (stack.getEnchantments().isEmpty() ? color.toString() : ChatColor.AQUA.toString());
         String normal = itemUtil.formatData(stack);
         String displayname = "";
 
@@ -122,7 +122,7 @@ public class SignShopItemMeta {
             if(type == MetaType.EnchantmentStorage) {
                 EnchantmentStorageMeta enchantmeta = (EnchantmentStorageMeta) meta;
                 if(enchantmeta.hasStoredEnchants())
-                    return (getDisplayName(stack, ChatColor.DARK_PURPLE) + " " + itemUtil.enchantmentsToMessageFormat(enchantmeta.getStoredEnchants()));
+                    return (getDisplayName(stack, ChatColor.AQUA) + " " + itemUtil.enchantmentsToMessageFormat(enchantmeta.getStoredEnchants()));
             } else if(type == MetaType.LeatherArmor) {
                 LeatherArmorMeta leathermeta = (LeatherArmorMeta) meta;
                 return (ColorUtil.getColorAsString(leathermeta.getColor()) + " Colored " + getDisplayName(stack));
@@ -143,7 +143,7 @@ public class SignShopItemMeta {
 
                 boolean first = true;
                 StringBuilder namebuilder = new StringBuilder(512);
-                namebuilder.append(getDisplayName(stack, ChatColor.DARK_PURPLE));
+                namebuilder.append(getDisplayName(stack, ChatColor.AQUA));
 
                 Collection<PotionEffect> effects = null;
                 Potion pot = null;
@@ -174,7 +174,7 @@ public class SignShopItemMeta {
                     }
                 } else
                     effects = potionmeta.getCustomEffects();
-
+                /*
                 namebuilder.append(" (");
 
                 for(PotionEffect effect : effects) {
@@ -197,13 +197,13 @@ public class SignShopItemMeta {
                 }
 
                 namebuilder.append(")");
-
+                */
                 return namebuilder.toString();
             } else if(type == MetaType.Fireworks) {
                 FireworkMeta fireworkmeta = (FireworkMeta) meta;
 
                 StringBuilder namebuilder = new StringBuilder(256);
-                namebuilder.append(getDisplayName(stack, ChatColor.DARK_PURPLE));
+                namebuilder.append(getDisplayName(stack, ChatColor.AQUA));
 
                 if(fireworkmeta.hasEffects()) {
                     namebuilder.append(" (");
