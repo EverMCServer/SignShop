@@ -228,7 +228,7 @@ public class SignShopPlayer {
         if(playername.isEmpty())
             return true;
         else
-            return Vault.getEconomy().has(getPlayer(), amount);
+            return Vault.getEconomy().has(getOfflinePlayer(), amount);
     }
 
     public boolean canHaveMoney(double amount) {
