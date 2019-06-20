@@ -234,7 +234,7 @@ public class itemUtil {
         for(Map.Entry<Enchantment,Integer> eEntry : enchantments.entrySet()) {
             if(eFirst) eFirst = false;
             else enchantmentMessage += ", ";
-            enchantmentMessage += (LanguageHelper.translateToLocal("enchantment.minecraft."+eEntry.getKey().getKey().getKey(),"zh_cn")+" "+LanguageHelper.getEnchantmentLevelName(eEntry.getValue(),"zh_cn"));
+            enchantmentMessage += (LanguageHelper.translateToLocal("enchantment.minecraft."+eEntry.getKey().getKey().getKey(),"zh_cn")+" "+binaryToRoman(eEntry.getValue()));
         }
         enchantmentMessage += ")";
         return enchantmentMessage;
