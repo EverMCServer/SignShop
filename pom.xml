@@ -71,6 +71,11 @@
             <version>1.13.2-v3</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.rlf</groupId>
+            <artifactId>uSkyBlock-API</artifactId>
+            <version>2.7.5</version>
+        </dependency>
     </dependencies>
 
 </project>

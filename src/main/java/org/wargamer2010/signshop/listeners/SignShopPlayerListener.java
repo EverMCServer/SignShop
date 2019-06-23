@@ -31,6 +31,7 @@ import org.wargamer2010.signshop.events.SSEventFactory;
 import org.wargamer2010.signshop.events.SSPostTransactionEvent;
 import org.wargamer2010.signshop.events.SSPreTransactionEvent;
 import org.wargamer2010.signshop.events.SSTouchShopEvent;
+import org.wargamer2010.signshop.hooks.uSkyBlockHandler;
 import org.wargamer2010.signshop.operations.SignShopArguments;
 import org.wargamer2010.signshop.operations.SignShopArgumentsType;
 import org.wargamer2010.signshop.operations.SignShopOperationListItem;
@@ -40,6 +41,7 @@ import org.wargamer2010.signshop.util.clicks;
 import org.wargamer2010.signshop.util.economyUtil;
 import org.wargamer2010.signshop.util.itemUtil;
 import org.wargamer2010.signshop.util.signshopUtil;
+import us.talabrek.ultimateskyblock.api.uSkyBlockAPI;
 
 public class SignShopPlayerListener implements Listener {
     private static final String helpPrefix = "help_";
@@ -232,6 +234,13 @@ public class SignShopPlayerListener implements Listener {
             SignShopPlayer ssOwner = seller.getOwner();
             sLines = ((Sign) bClicked.getState()).getLines();
             sOperation = signshopUtil.getOperation(sLines[0]);
+            if (sOperation.equals("buy")){
+                if(!uSkyBlockHandler.isChallengeCompleted(event.getPlayer(), "builder5")){
+                    ssPlayer.sendMessage(SignShopConfig.getError("challenge_not_completed", null));
+                    //event.setCancelled(true);
+                    return;
+                }
+            }
 
             // Verify the operation
             if(SignShopConfig.getBlocks(sOperation).isEmpty()){
