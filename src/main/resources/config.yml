@@ -34,10 +34,10 @@ ChunkLoadRadius: 2
 LinkMaterial: redstone
 
 # Used to change the owner of a sign or update an active sign's words by punching another sign first
-UpdateMaterial: ink_sack
+UpdateMaterial: dye
 
 # Used to destroy shops in creative mode if "ProtectShopsInCreative" is set to "true"
-DestroyMaterial: gold_axe
+DestroyMaterial: golden_axe
 
 
 #----------- Language ------------------

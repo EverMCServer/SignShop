@@ -2,9 +2,11 @@ package org.wargamer2010.signshop.operations;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.type.Switch;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Lever;
 import org.bukkit.block.Block;
+import org.wargamer2010.signshop.util.redstoneUtil;
 import org.wargamer2010.signshop.util.signshopUtil;
 import org.wargamer2010.signshop.configuration.SignShopConfig;
 
@@ -32,9 +34,7 @@ public class setRedstoneOn implements SignShopOperation {
         for(int i = 0; i < ssArgs.getActivatables().get().size(); i++) {
             bLever = ssArgs.getActivatables().get().get(i);
             if(bLever.getType() == Material.getMaterial("LEVER")) {
-                BlockState state = bLever.getState();
-                MaterialData data = state.getData();
-                Lever lever = (Lever)data;
+                Switch lever = (Switch) bLever.getBlockData();
                 if(!lever.isPowered())
                     bReturn = true;
             }
@@ -54,13 +54,11 @@ public class setRedstoneOn implements SignShopOperation {
         for(int i = 0; i < ssArgs.getActivatables().get().size(); i++) {
             bLever = ssArgs.getActivatables().get().get(i);
             if(bLever.getType() == Material.getMaterial("LEVER")) {
-                BlockState state = bLever.getState();
-                MaterialData data = state.getData();
-                Lever lever = (Lever)data;
+                Switch lever = (Switch) bLever.getBlockData();
                 if(!lever.isPowered()) {
                     lever.setPowered(true);
-                    state.setData(lever);
-                    state.update();
+                    bLever.setBlockData(lever);
+                    redstoneUtil.refreshLever(bLever);
                     signshopUtil.generateInteractEvent(bLever, ssArgs.getPlayer().get().getPlayer(), ssArgs.getBlockFace().get());
                 }
             }
