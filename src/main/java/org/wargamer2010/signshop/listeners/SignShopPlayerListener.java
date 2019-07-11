@@ -173,6 +173,18 @@ public class SignShopPlayerListener implements Listener {
         Seller seller = Storage.get().getSeller(event.getClickedBlock().getLocation());
 
         if(event.getAction() == Action.LEFT_CLICK_BLOCK && event.getItem() != null && seller == null && SignShopConfig.isOPMaterial(event.getItem().getType())) {
+            if(!uSkyBlockHandler.isChallengeCompleted(event.getPlayer(), "builder5")){
+                ssPlayer.sendMessage(SignShopConfig.getError("challenge_not_completed", null));
+                //event.setCancelled(true);
+                return;
+            }
+            if(!itemUtil.clickedSign(bClicked)){
+                if(!uSkyBlockHandler.isOnIsland(player,event.getClickedBlock().getLocation())){
+                    ssPlayer.sendMessage(SignShopConfig.getError("outside_island", null));
+                    //event.setCancelled(true);
+                    return;
+                }
+            }
             if(itemUtil.clickedSign(bClicked) && event.getItem().getType() == SignShopConfig.getLinkMaterial()) {
                 sLines = ((Sign) bClicked.getState()).getLines();
                 sOperation = signshopUtil.getOperation(sLines[0]);
@@ -234,7 +246,7 @@ public class SignShopPlayerListener implements Listener {
             SignShopPlayer ssOwner = seller.getOwner();
             sLines = ((Sign) bClicked.getState()).getLines();
             sOperation = signshopUtil.getOperation(sLines[0]);
-            if (sOperation.equals("buy")){
+            if (!sOperation.equals("ibuy")){
                 if(!uSkyBlockHandler.isChallengeCompleted(event.getPlayer(), "builder5")){
                     ssPlayer.sendMessage(SignShopConfig.getError("challenge_not_completed", null));
                     //event.setCancelled(true);

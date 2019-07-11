@@ -88,6 +88,7 @@ public class SignShopPlayer {
         if(sMessage == null || sMessage.trim().isEmpty() || getPlayer() == null || ignoreMessages)
             return;
         String message = (ChatColor.GOLD + "[SignShop] " + ChatColor.WHITE + sMessage);
+        System.out.println("[SignShop] "+getPlayer()+": "+ sMessage);
         getPlayer().sendMessage(message);
     }
 

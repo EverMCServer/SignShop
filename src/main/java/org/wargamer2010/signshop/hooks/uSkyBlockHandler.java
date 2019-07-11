@@ -1,6 +1,7 @@
 package org.wargamer2010.signshop.hooks;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import us.talabrek.ultimateskyblock.api.ChallengeCompletion;
@@ -18,6 +19,15 @@ public class uSkyBlockHandler {
             return usb;
         }
         return null;
+    }
+
+    public static boolean isOnIsland(Player player, Location loc){
+        uSkyBlockAPI usb = getUSBHandler();
+        if(usb == null)
+            return true;
+        if(usb.getIslandInfo(loc) == null)
+            return false;
+        return usb.getIslandInfo(loc).getName().equals(usb.getIslandInfo(player).getName());
     }
 
     public static boolean isChallengeCompleted(Player player, String challengeName){
