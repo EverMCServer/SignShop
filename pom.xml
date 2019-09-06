@@ -6,7 +6,7 @@
 
     <groupId>org.wargamer2010.signshop</groupId>
     <artifactId>SignShop</artifactId>
-    <version>3.2</version>
+    <version>3.3</version>
 
     <repositories>
         <repository>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.13.2-R0.1-SNAPSHOT</version>
+            <version>1.14.4-R0.1-SNAPSHOT</version>
             <optional>true</optional>
             <scope>compile</scope>
         </dependency>
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.bergerkiller.bukkit</groupId>
             <artifactId>BKCommonLib</artifactId>
-            <version>1.13.2-v3</version>
+            <version>1.14.4-v2-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

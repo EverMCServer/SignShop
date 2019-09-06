@@ -22,30 +22,5 @@ public class redstoneUtil {
             BlockUtil.applyPhysics(bLever.getRelative(BlockFace.DOWN), Material.LEVER);
             BlockUtil.applyPhysics(bLever.getRelative(BlockFace.UP), Material.LEVER);
         }
-        /*
-        Block wall = bLever.getRelative(((Switch) bLever.getBlockData()).getFacing().getOppositeFace());
-        BlockData walldata = wall.getBlockData();
-
-        Switch lever = (Switch)bLever.getBlockData();
-
-        if(wall.getType().isOccluding()) {
-            if (wall.getType() != Material.getMaterial("BARRIER"))
-                wall.setType(Material.getMaterial("BARRIER"));
-            else
-                wall.setType(Material.getMaterial("STONE"));
-            wall.setBlockData(walldata);
-
-            if (walldata.getMaterial() == Material.REDSTONE_LAMP) {
-                if (lever.isPowered()) {
-                    ((Lightable) walldata).setLit(true);
-                    wall.setBlockData(walldata);
-                } else {
-                    BlockData leverdata = bLever.getBlockData();
-                    bLever.setType(Material.getMaterial("GLASS"));
-                    bLever.setBlockData(leverdata);
-                }
-            }
-        }*/
-
     }
 }
