@@ -3,6 +3,9 @@ package org.wargamer2010.signshop.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.meowj.langutils.lang.LanguageHelper;
+
 import org.bukkit.Color;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -18,28 +21,28 @@ public class ColorUtil {
     public static void init() {
         // Stock Minecraft colors
         colorLookup.put(8339378 , "purple");
-        colorLookup.put(11685080 , "magenta");
+        colorLookup.put(12801229 , "magenta");
         colorLookup.put(8073150 , "purple");
-        colorLookup.put(6724056 , "light blue");
-        colorLookup.put(5013401 , "cyan");
-        colorLookup.put(5000268 , "gray");
-        colorLookup.put(10066329 , "light gray");
+        colorLookup.put(6719955 , "light_blue");
+        colorLookup.put(2651799 , "cyan");
+        colorLookup.put(4408131 , "gray");
+        colorLookup.put(11250603 , "light_gray");
         colorLookup.put(15892389 , "pink");
-        colorLookup.put(14188339 , "orange");
-        colorLookup.put(8375321 , "lime");
+        colorLookup.put(15435844 , "orange");
+        colorLookup.put(4312372 , "lime");
         colorLookup.put(11743532 , "red");
         colorLookup.put(2437522 , "blue");
-        colorLookup.put(15066419 , "yellow");
-        colorLookup.put(10040115 , "red");
-        colorLookup.put(1644825 , "black");
+        colorLookup.put(14602026 , "yellow");
+        colorLookup.put(11743532 , "red");
+        colorLookup.put(1973019 , "black");
         colorLookup.put(6704179 , "brown");
-        colorLookup.put(6717235 , "green");
-        colorLookup.put(16777215 , "white");
-        colorLookup.put(3361970 , "blue");
+        colorLookup.put(3887386 , "green");
+        colorLookup.put(15790320 , "white");
+        colorLookup.put(2437522 , "blue");
         colorLookup.put(1973019 , "black");
         colorLookup.put(14188952 , "pink");
         colorLookup.put(14602026, "yellow");
-        colorLookup.put(10511680, "brown");
+        colorLookup.put(5320730, "brown");
 
         // Load colors that will help guessing custom colornames
         FileConfiguration config = new YamlConfiguration();
@@ -60,7 +63,7 @@ public class ColorUtil {
     public static String getColorAsString(Color color) {
         int rgb = color.asRGB();
         if(colorLookup.containsKey(rgb)) {
-            return signshopUtil.capFirstLetter(colorLookup.get(rgb));
+            return LanguageHelper.translateToLocal("item.minecraft.firework_star."+ colorLookup.get(rgb), SignShopConfig.getPreferredLanguage());
         } else {
             double diff = -1;
             String last = "";
@@ -71,7 +74,8 @@ public class ColorUtil {
                     last = colorLookup.get(val);
                 }
             }
-            return signshopUtil.capFirstLetter(last);
+            return LanguageHelper.translateToLocal("item.minecraft.firework_star."+ colorLookup.get(last), SignShopConfig.getPreferredLanguage()) + 
+            "[#"+ Integer.toHexString(color.getRed()).toUpperCase() + Integer.toHexString(color.getGreen()).toUpperCase() + Integer.toHexString(color.getBlue()).toUpperCase() +"]";
         }
     }
 

@@ -2,6 +2,8 @@
 package org.wargamer2010.signshop.blocks;
 
 import com.google.common.collect.ImmutableList;
+import com.meowj.langutils.lang.LanguageHelper;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -22,6 +24,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.wargamer2010.signshop.configuration.ColorUtil;
+import org.wargamer2010.signshop.configuration.SignShopConfig;
 import org.wargamer2010.signshop.util.itemUtil;
 import static org.wargamer2010.signshop.util.itemUtil.enchantmentsToMessageFormat;
 import org.wargamer2010.signshop.util.signshopUtil;
@@ -68,14 +71,15 @@ public class SignShopItemMeta {
     }
 
     private static String convertFireworkTypeToDisplay(FireworkEffect.Type type) {
-        String temp = signshopUtil.capFirstLetter(type.toString().toLowerCase()).replace("_", " ");
-        if(temp.contains(" ")) {
-            String[] temparr = temp.split(" ");
-            String bak = temparr[0]; temparr[0] = temparr[1];
-            temparr[1] = bak;
-            temp = signshopUtil.implode(temparr, " ");
+        String t = "item.minecraft.firework_star.shape";
+        switch(type){
+            case STAR: t+=".star";break;
+            case BALL: t+=".small_ball";break;
+            case BALL_LARGE: t+=".large_ball";break;
+            case BURST: t+=".burst";break;
+            case CREEPER: t+=".creeper";break;
         }
-        return signshopUtil.capFirstLetter(temp);
+        return LanguageHelper.translateToLocal(t, SignShopConfig.getPreferredLanguage());
     }
 
     private static boolean hasMeta(ItemStack stack) {
@@ -89,24 +93,29 @@ public class SignShopItemMeta {
 
     private static String getDisplayName(ItemStack stack, ChatColor color) {
         String txtcolor = txtColor.toString();
-        String customcolor = (stack.getEnchantments().isEmpty() ? color.toString() : ChatColor.AQUA.toString());
-        String normal = itemUtil.formatData(stack);
+        String enccolor = ChatColor.LIGHT_PURPLE.toString();
+        String durcolor = ChatColor.GREEN.toString();
+        String customcolor = (stack.getEnchantments().isEmpty() ? color.toString() : (ChatColor.AQUA.toString()+ChatColor.ITALIC.toString()));
+        String normal = LanguageHelper.getItemName(stack,SignShopConfig.getPreferredLanguage());
         String displayname = "";
 
         if(stack.getItemMeta() != null) {
             String custom = (stack.getItemMeta().hasDisplayName()
-                        ? (txtcolor + "\"" + customcolor + stack.getItemMeta().getDisplayName() + txtcolor + "\"") : "");
+                        ? (customcolor + "\""+stack.getItemMeta().getDisplayName() + "\"" + txtcolor) : "");
             if(custom.length() > 0)
-                displayname = (custom + " (" + normal + ")" + txtcolor);
+                displayname = (normal + custom + txtcolor);
         }
         
         if(displayname.isEmpty())
             displayname = (txtcolor + customcolor + normal + txtcolor);
 
-        if(stack.getType().getMaxDurability() >= 30 && stack.getDurability() != 0)
-            displayname = (" Damaged " + displayname);
+        if(stack.hasItemMeta() && stack.getItemMeta().isUnbreakable()){
+            displayname = displayname + durcolor + "[" +LanguageHelper.translateToLocal("item.unbreakable",SignShopConfig.getPreferredLanguage()) + "]" + txtcolor;
+        }
+        else if(((Damageable)stack.getItemMeta()).hasDamage())
+            displayname = ("损坏的" + displayname + durcolor + "[耐久" + (stack.getType().getMaxDurability()-((Damageable)stack.getItemMeta()).getDamage()) + "/" + stack.getType().getMaxDurability() + "]" + txtcolor);
         if(stack.getEnchantments().size() > 0)
-            displayname += (txtcolor + " " + enchantmentsToMessageFormat(stack.getEnchantments()));
+            displayname += (enccolor + " " + enchantmentsToMessageFormat(stack.getEnchantments()));
 
         return displayname;
     }
@@ -122,17 +131,18 @@ public class SignShopItemMeta {
             if(type == MetaType.EnchantmentStorage) {
                 EnchantmentStorageMeta enchantmeta = (EnchantmentStorageMeta) meta;
                 if(enchantmeta.hasStoredEnchants())
-                    return (getDisplayName(stack, ChatColor.AQUA) + " " + itemUtil.enchantmentsToMessageFormat(enchantmeta.getStoredEnchants()));
+                    return (getDisplayName(stack) + " " + itemUtil.enchantmentsToMessageFormat(enchantmeta.getStoredEnchants()));
             } else if(type == MetaType.LeatherArmor) {
                 LeatherArmorMeta leathermeta = (LeatherArmorMeta) meta;
-                return (ColorUtil.getColorAsString(leathermeta.getColor()) + " Colored " + getDisplayName(stack));
+                return (LanguageHelper.translateToLocal("color.minecraft."+ColorUtil.getColorAsString(leathermeta.getColor()).toLowerCase(), SignShopConfig.getPreferredLanguage()) + getDisplayName(stack));
             } else if(type == MetaType.Skull) {
-                String postfix = "'s Head";
                 SkullMeta skullmeta = (SkullMeta) meta;
-                if(skullmeta.getOwner() != null) {
+                if(skullmeta.getOwningPlayer() != null) {
                     // Name coloring support had to be dropped since there is no more link between
                     // the skull owner and the actual player
-                    return (skullmeta.getOwner() + postfix);
+                    return String.format(
+                        LanguageHelper.translateToLocal("block.minecraft.player_head.named", SignShopConfig.getPreferredLanguage()),
+                        skullmeta.getOwningPlayer().getName());
                 } else {
                     // We can no longer get a pretty name by ID (SKULL_ITEM isn't pretty, is it?)
                     // So we'll have to rely on the web lookup, if the server owner has it enabled
@@ -140,6 +150,7 @@ public class SignShopItemMeta {
                 }
             } else if(type == MetaType.Potion) {
                 PotionMeta potionmeta = (PotionMeta) meta;
+                System.out.println(potionmeta.serialize());
 
                 boolean first = true;
                 StringBuilder namebuilder = new StringBuilder(512);
@@ -203,28 +214,27 @@ public class SignShopItemMeta {
                 FireworkMeta fireworkmeta = (FireworkMeta) meta;
 
                 StringBuilder namebuilder = new StringBuilder(256);
-                namebuilder.append(getDisplayName(stack, ChatColor.AQUA));
+                namebuilder.append(getDisplayName(stack));
+                namebuilder.append(ChatColor.AQUA.toString());
+                namebuilder.append(" (");
+                namebuilder.append(LanguageHelper.translateToLocal("item.minecraft.firework_rocket.flight", SignShopConfig.getPreferredLanguage()));
+                namebuilder.append(fireworkmeta.getPower());
 
                 if(fireworkmeta.hasEffects()) {
-                    namebuilder.append(" (");
-                    namebuilder.append("Duration : ");
-                    namebuilder.append(fireworkmeta.getPower());
                     for(FireworkEffect effect : fireworkmeta.getEffects()) {
                         namebuilder.append(", ");
 
                         namebuilder.append(convertFireworkTypeToDisplay(effect.getType()));
-                        namebuilder.append(" with");
-                        namebuilder.append((effect.getColors().size() > 0 ? " colors: " : ""));
+                        namebuilder.append((effect.getColors().size() > 0 ? ", " : ""));
                         namebuilder.append(convertColorsToDisplay(effect.getColors()));
-                        namebuilder.append((effect.getFadeColors().size() > 0 ? " and fadecolors: " : ""));
+                        namebuilder.append((effect.getFadeColors().size() > 0 ?
+                            ", " + LanguageHelper.translateToLocal("item.minecraft.firework_star.fade_to", SignShopConfig.getPreferredLanguage()) : ""));
                         namebuilder.append(convertColorsToDisplay(effect.getFadeColors()));
-
-                        namebuilder.append(effect.hasFlicker() ? " +twinkle" : "");
-                        namebuilder.append(effect.hasTrail()? " +trail" : "");
+                        namebuilder.append(effect.hasFlicker() ?  ", "+LanguageHelper.translateToLocal("item.minecraft.firework_star.flicker", SignShopConfig.getPreferredLanguage())  : "");
+                        namebuilder.append(effect.hasTrail()? ", "+LanguageHelper.translateToLocal("item.minecraft.firework_star.trail", SignShopConfig.getPreferredLanguage()) : "");
                     }
-                    namebuilder.append(")");
                 }
-
+                namebuilder.append(")");
                 return namebuilder.toString();
             }
         }
