@@ -8,6 +8,10 @@ LangUtils is also needed for translation. you can get it at https://github.com/N
 
 ## Now support i18n!
 
+en_US:
+![https://raw.githubusercontent.com/EverMCServer/SignShop/evermc/demo2.png](https://raw.githubusercontent.com/EverMCServer/SignShop/evermc/demo2.png)
+
+zh_CN:
 ![https://raw.githubusercontent.com/EverMCServer/SignShop/evermc/demo1.png](https://raw.githubusercontent.com/EverMCServer/SignShop/evermc/demo1.png)
 
 ## SignShop
