@@ -151,7 +151,7 @@ public class itemUtil {
     public static String formatData(ItemStack data, short durability) {
         String name1;
         if(data.getItemMeta().getDisplayName() == null || data.getItemMeta().getDisplayName().equals("")) {
-            name1= LanguageHelper.getItemDisplayName(data,SignShopConfig.getPreferredLanguage());
+            name1= LanguageHelper.getItemName(new ItemStack(data.getType()),SignShopConfig.getPreferredLanguage());
         }
         else {
             name1 = data.getItemMeta().getDisplayName();
@@ -242,7 +242,7 @@ public class itemUtil {
                     LanguageHelper.translateToLocal(
                             "enchantment.minecraft."+eEntry.getKey().getKey().getKey(),
                             SignShopConfig.getPreferredLanguage())
-                            + " " + binaryToRoman(eEntry.getValue()));
+                            + binaryToRoman(eEntry.getValue()));
         }
         enchantmentMessage += ")";
         return enchantmentMessage;
