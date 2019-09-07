@@ -1,6 +1,6 @@
 ## Now support 1.13 and 1.14!
 
-download: https://github.com/djytw/SignShop/releases
+download: https://github.com/EverMCServer/SignShop/releases
 
 BKCommonLib is needed, you can get it at https://www.spigotmc.org/resources/bkcommonlib.39590/
 
