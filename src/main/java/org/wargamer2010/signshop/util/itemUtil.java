@@ -400,7 +400,8 @@ public class itemUtil {
     }
 
     public static Boolean clickedSign(Block bBlock) {
-        return (bBlock.getType() == Material.getMaterial("SIGN") || bBlock.getType() == Material.getMaterial("WALL_SIGN") || bBlock.getType() == Material.getMaterial("SIGN_POST"));
+        return bBlock.getType().toString().endsWith("_SIGN");
+        //return (bBlock.getType() == Material.getMaterial("SIGN") || bBlock.getType() == Material.getMaterial("WALL_SIGN") || bBlock.getType() == Material.getMaterial("SIGN_POST"));
     }
 
     public static Boolean clickedDoor(Block bBlock) {
