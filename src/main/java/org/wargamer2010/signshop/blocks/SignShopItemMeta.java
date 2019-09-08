@@ -20,6 +20,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
@@ -35,7 +36,35 @@ public class SignShopItemMeta {
     private static final String innerListSeperator = "^";
     private static final ChatColor txtColor = ChatColor.YELLOW;
     private static final String filename = "books.db";
-    
+    private static final String[] potion_effects = {
+        "",".speed", ".slowness", ".haste", ".mining_fatigue", ".strength", ".instant_health", ".instant_damage", ".jump_boost", 
+        ".nausea", ".regeneration", ".resistance", ".fire_resistance", ".water_breathing", ".invisibility", ".blindness", 
+        ".night_vision", ".hunger", ".weakness", ".poison", ".wither", ".health_boost", ".absorption", ".saturation", 
+        ".glowing", ".levitation", ".luck", ".unluck", ".slow_falling", ".conduit_power", ".dolphins_grace", ".bad_omen"
+    };
+    private static final int[][] potion_time = {
+        {0,0,0},//UNCR
+        {0,0,0},//WATE
+        {0,0,0},//MUND
+        {0,0,0},//THIC
+        {0,0,0},//AWKW
+        {3600,9600,0},//NIGH
+        {3600,9600,0},//INVI
+        {3600,9600,1800},//JUMP
+        {3600,9600,0},//FIRE
+        {3600,9600,1800},//SPEE
+        {1800,4800,400},//SLOW
+        {3600,9600,0},//WATE
+        {0,0,0},//INST
+        {0,0,0},//INST
+        {900,1800,432},//POIS
+        {900,1800,432},//REGE
+        {3600,9600,1800},//STRE
+        {1800,4800,0},//WEAK
+        {6000,0,0},//LUCK
+        {400,800,400},//TURT
+        {1800,4800,0}//SLOW
+    };
     private SignShopItemMeta() {
 
     }
@@ -113,7 +142,10 @@ public class SignShopItemMeta {
             displayname = displayname + durcolor + "[" +LanguageHelper.translateToLocal("item.unbreakable",SignShopConfig.getPreferredLanguage()) + "]" + txtcolor;
         }
         else if(((Damageable)stack.getItemMeta()).hasDamage())
-            displayname = ("损坏的" + displayname + durcolor + "[耐久" + (stack.getType().getMaxDurability()-((Damageable)stack.getItemMeta()).getDamage()) + "/" + stack.getType().getMaxDurability() + "]" + txtcolor);
+            displayname = (displayname + durcolor + "[" +
+            String.format(LanguageHelper.translateToLocal("item.durability", SignShopConfig.getPreferredLanguage()),
+                (stack.getType().getMaxDurability()-((Damageable)stack.getItemMeta()).getDamage()), stack.getType().getMaxDurability())
+                 + "]" + txtcolor);
         if(stack.getEnchantments().size() > 0)
             displayname += (enccolor + " " + enchantmentsToMessageFormat(stack.getEnchantments()));
 
@@ -150,65 +182,47 @@ public class SignShopItemMeta {
                 }
             } else if(type == MetaType.Potion) {
                 PotionMeta potionmeta = (PotionMeta) meta;
-                System.out.println(potionmeta.serialize());
-
-                boolean first = true;
                 StringBuilder namebuilder = new StringBuilder(512);
                 namebuilder.append(getDisplayName(stack, ChatColor.AQUA));
 
-                Collection<PotionEffect> effects = null;
-                Potion pot = null;
-                if(!potionmeta.hasCustomEffects()) {
-                    try {
-                        pot = Potion.fromItemStack(stack);
-                        effects = pot.getEffects();
-                    } catch(IllegalArgumentException ex) {
-                        int EXTENDED_BIT = 0x40;
-                        short damage = stack.getDurability();
-                        if ((damage & EXTENDED_BIT) > 0) {
-                            // Instant potions cannot be extended!
-                            // So let's invert the extended bit and retry.
-                            Integer tempint = (damage ^ EXTENDED_BIT);
-                            stack.setDurability(tempint.shortValue());
-                            try {
-                                pot = Potion.fromItemStack(stack);
-                                effects = pot.getEffects();
-                            } catch (IllegalArgumentException ex2) {
-                                // I give up
-                            }
-                            stack.setDurability(damage);
-                        }
-                        if(effects == null) {
-                            pot = new Potion(PotionType.WATER);
-                            effects = pot.getEffects();
-                        }
-                    }
-                } else
-                    effects = potionmeta.getCustomEffects();
-                /*
-                namebuilder.append(" (");
-
-                for(PotionEffect effect : effects) {
-                    if(first) first = false;
-                    else namebuilder.append(", ");
-
-                    namebuilder.append(signshopUtil.capFirstLetter(effect.getType().getName().toLowerCase()));
-                    if(pot != null && pot.getLevel() > 0) {
+                PotionData pd = potionmeta.getBasePotionData();
+                if(pd.isUpgraded()){
+                    int ptime = potion_time[pd.getType().ordinal()][2];
+                    if(ptime == 0)
+                        namebuilder.append(" II ");
+                    else
+                        namebuilder.append(String.format(" II (%02d:%02d)", ptime/1200, ptime/20%60));
+                }
+                else if(pd.isExtended()){
+                    int ptime = potion_time[pd.getType().ordinal()][1];
+                    if(ptime == 0)
                         namebuilder.append(" ");
-                        namebuilder.append(itemUtil.binaryToRoman(pot.getLevel()));
-                    } else {
-                        namebuilder.append(" with");
-                        namebuilder.append(" amplifier: ");
-                        namebuilder.append(effect.getAmplifier());
-                    }
-                    if(effect.getDuration() > 1) {
-                        namebuilder.append(" and duration: ");
-                        namebuilder.append(effect.getDuration());
+                    else
+                        namebuilder.append(String.format(" (%02d:%02d)", ptime/1200, ptime/20%60));
+                }else{
+                    int ptime = potion_time[pd.getType().ordinal()][0];
+                    if(ptime == 0)
+                        namebuilder.append(" ");
+                    else
+                        namebuilder.append(String.format(" (%02d:%02d)", ptime/1200, ptime/20%60));
+                }
+                if(potionmeta.hasCustomEffects()){
+                    for (PotionEffect pe : potionmeta.getCustomEffects()){
+                        namebuilder.append(ChatColor.LIGHT_PURPLE.toString()+" (");
+                        namebuilder.append(LanguageHelper.translateToLocal("effect.minecraft"+potion_effects[pe.getType().hashCode()], SignShopConfig.getPreferredLanguage()));
+                        namebuilder.append(" "+itemUtil.binaryToRoman(pe.getAmplifier()+1));
+                        namebuilder.append(String.format(" %02d:%02d", pe.getDuration()/1200, pe.getDuration()/20%60));
+                        /*
+                        //do not display about particles
+                        namebuilder.append("["+LanguageHelper.translateToLocal("options.particles", SignShopConfig.getPreferredLanguage())+":");
+                        if(!pe.hasParticles()) namebuilder.append(LanguageHelper.translateToLocal("options.particles.minimal", SignShopConfig.getPreferredLanguage()));
+                        else if(pe.isAmbient()) namebuilder.append(LanguageHelper.translateToLocal("options.particles.decreased", SignShopConfig.getPreferredLanguage()));
+                        else namebuilder.append(LanguageHelper.translateToLocal("options.particles.all", SignShopConfig.getPreferredLanguage()));
+                        namebuilder.append("]");
+                        */
+                        namebuilder.append(")");
                     }
                 }
-
-                namebuilder.append(")");
-                */
                 return namebuilder.toString();
             } else if(type == MetaType.Fireworks) {
                 FireworkMeta fireworkmeta = (FireworkMeta) meta;
