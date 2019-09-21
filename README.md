@@ -9,10 +9,10 @@ LangUtils is also needed for translation. you can get it at https://github.com/N
 ## Now support i18n for item names and detailed information!
 
 en_US:
-![https://raw.githubusercontent.com/EverMCServer/SignShop/master/demo2.png](https://raw.githubusercontent.com/EverMCServer/SignShop/master/demo2.png)
+<img src="https://i.imgur.com/vHSEvDt.png" title="English"/>
 
 zh_CN:
-![https://raw.githubusercontent.com/EverMCServer/SignShop/master/demo1.png](https://raw.githubusercontent.com/EverMCServer/SignShop/master/demo1.png)
+<img src="https://i.imgur.com/FBUMY56.png" title="Chinese">
 
 ## SignShop
 SignShop allows you to set up physical shops by punching a chest with your items you want to sell, then punching a sign (while holding redstone dust). It's easy to set up, and even easier to customize!
