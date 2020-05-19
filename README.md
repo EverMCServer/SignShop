@@ -1,3 +1,14 @@
+# We are moving to EverShop
+
+EverShop is a powerful shop plugin which supports most of SignShop's functions with a hugh imporove in performance and i18n support.
+
+Have a try? https://github.com/EverMCServer/EverShop
+
+
+-----
+
+-----
+
 ## Now support 1.13 and 1.14!
 
 download: https://github.com/EverMCServer/SignShop/releases
